@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application History - Campus Recruitment Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Student Placement Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="student-dashboard.html">Dashboard</a></li>
+            <li><a href="job-list.html">Available Jobs</a></li>
+            <li><a href="application-history.html" class="active">My Applications</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-header">
+            <div>
+                <h1>Application History &amp; Status Tracking</h1>
+                <p style="color:var(--text-muted);">Track your hiring status across all campus recruitment drives.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Company Name</th>
+                            <th>Job Role</th>
+                            <th>Package</th>
+                            <th>Date Applied</th>
+                            <th>Hiring Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullHistoryTableBody">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading application history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tableBody = document.getElementById('fullHistoryTableBody');
+            try {
+                const res = await fetch('api/application?action=history');
+                const data = await res.json();
+                if (data.status === 'success') {
+                    const apps = data.applications;
+                    if (!apps || apps.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No job applications submitted yet.</td></tr>`;
+                        return;
+                    }
+                    tableBody.innerHTML = apps.map((a, idx) => `
+                        <tr>
+                            <td>${idx + 1}</td>
+                            <td><strong>${a.companyName}</strong></td>
+                            <td>${a.jobRole}</td>
+                            <td>${a.packageAmount || 'N/A'}</td>
+                            <td>${formatDate(a.applicationDate)}</td>
+                            <td>${getStatusBadge(a.applicationStatus)}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-danger">Failed to load history.</td></tr>`;
+            }
+        });
+    </script>
+</body>
+</html>

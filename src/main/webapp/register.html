@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Campus Recruitment Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Campus Recruitment Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job-list.html">Job Drives</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container" style="max-width:650px; margin-top:2rem;">
+        <div class="card">
+            <h2 style="text-align:center; margin-bottom:0.5rem;">Create Account</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem;">Register as a Student or Recruiter Company</p>
+
+            <div id="regAlert"></div>
+
+            <form id="registerForm">
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label for="regRole">Select Role</label>
+                    <select id="regRole" onchange="toggleRoleFields()" required>
+                        <option value="STUDENT" selected>Student</option>
+                        <option value="COMPANY">Company / Recruiter</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="regName" id="nameLabel">Full Name</label>
+                        <input type="text" id="regName" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" placeholder="e.g. rahul@student.edu" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" placeholder="Minimum 6 characters" required>
+                    </div>
+                </div>
+
+                <!-- Student Fields -->
+                <div id="studentFields" style="margin-top:1rem;" class="form-grid">
+                    <div class="form-group">
+                        <label for="regBranch">Branch / Department</label>
+                        <select id="regBranch">
+                            <option value="CSE">CSE (Computer Science)</option>
+                            <option value="IT">IT (Information Tech)</option>
+                            <option value="ECE">ECE (Electronics)</option>
+                            <option value="EEE">EEE (Electrical)</option>
+                            <option value="MECH">Mechanical</option>
+                            <option value="CIVIL">Civil</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regCgpa">CGPA (0.0 to 10.0)</label>
+                        <input type="number" step="0.01" min="0" max="10" id="regCgpa" value="8.0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regGradYear">Graduation Year</label>
+                        <input type="number" id="regGradYear" value="2026">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regBacklogs">Active Backlogs</label>
+                        <input type="number" id="regBacklogs" value="0">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="regSkills">Key Skills (comma separated)</label>
+                        <input type="text" id="regSkills" placeholder="e.g. Java, Data Structures, SQL, HTML/CSS">
+                    </div>
+                </div>
+
+                <!-- Company Fields -->
+                <div id="companyFields" style="display:none; margin-top:1rem;" class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="regCompanyDesc">Company Overview / Description</label>
+                        <textarea id="regCompanyDesc" rows="3" placeholder="Describe your company and core technologies..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Create Account</button>
+            </form>
+
+            <div style="margin-top:1.5rem; text-align:center; font-size:0.9rem; color:var(--text-muted);">
+                Already registered? <a href="login.html">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        function toggleRoleFields() {
+            const role = document.getElementById('regRole').value;
+            const studentSection = document.getElementById('studentFields');
+            const companySection = document.getElementById('companyFields');
+            const nameLabel = document.getElementById('nameLabel');
+
+            if (role === 'COMPANY') {
+                studentSection.style.display = 'none';
+                companySection.style.display = 'grid';
+                nameLabel.textContent = 'Company Name';
+            } else {
+                studentSection.style.display = 'grid';
+                companySection.style.display = 'none';
+                nameLabel.textContent = 'Full Name';
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAlert('regAlert');
+
+            const role = document.getElementById('regRole').value;
+            const payload = {
+                role: role,
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+            };
+
+            if (role === 'STUDENT') {
+                payload.branch = document.getElementById('regBranch').value;
+                payload.cgpa = parseFloat(document.getElementById('regCgpa').value);
+                payload.graduationYear = parseInt(document.getElementById('regGradYear').value);
+                payload.activeBacklogs = parseInt(document.getElementById('regBacklogs').value);
+                payload.skills = document.getElementById('regSkills').value;
+            } else {
+                payload.companyName = document.getElementById('regName').value;
+                payload.companyDescription = document.getElementById('regCompanyDesc').value;
+            }
+
+            try {
+                const res = await fetch('api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    showAlert('regAlert', data.message, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    showAlert('regAlert', data.message, 'danger');
+                }
+            } catch (err) {
+                showAlert('regAlert', 'Registration failed: ' + err.message, 'danger');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - Campus Recruitment Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Campus Recruitment Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job-list.html">Job Drives</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container" style="max-width:800px;">
+        <div id="jobDetailCard" class="card">
+            <p class="text-muted">Loading job details...</p>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const jobId = params.get('id');
+            const card = document.getElementById('jobDetailCard');
+
+            if (!jobId) {
+                card.innerHTML = `<p class="text-danger">No job drive ID specified.</p>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(`api/job-drive?action=get&id=${jobId}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    const j = data.jobDrive;
+                    const isEligible = data.isEligible;
+                    const reason = data.eligibilityReason;
+                    const hasApplied = data.hasApplied;
+
+                    let statusBadge = '';
+                    if (isEligible !== undefined) {
+                        statusBadge = getEligibilityBadge(isEligible, reason);
+                    }
+
+                    let btnHtml = '';
+                    if (hasApplied) {
+                        btnHtml = `<span class="badge badge-applied">Already Applied</span>`;
+                    } else if (isEligible) {
+                        btnHtml = `<button class="btn btn-primary" onclick="applyJob(${j.jobId})">Submit Application</button>`;
+                    } else if (isEligible === false) {
+                        btnHtml = `<button class="btn btn-secondary" disabled style="opacity:0.5;">Not Eligible</button>`;
+                    } else {
+                        btnHtml = `<a href="login.html" class="btn btn-primary">Log in as Student to Apply</a>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div>
+                                <h1>${j.jobRole}</h1>
+                                <div style="font-size:1.1rem; color:var(--primary); font-weight:600;">${j.companyName}</div>
+                            </div>
+                            <div>${statusBadge}</div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; font-size:0.95rem; background:var(--bg-input); padding:1rem; border-radius:var(--radius-md);">
+                            <div><strong>Package:</strong> ${j.packageAmount}</div>
+                            <div><strong>Application Deadline:</strong> ${formatDate(j.applicationDeadline)}</div>
+                            <div><strong>Minimum CGPA Required:</strong> ${j.minimumCgpa}</div>
+                            <div><strong>Max Backlogs Allowed:</strong> ${j.maximumBacklogs}</div>
+                            <div><strong>Eligible Branches:</strong> ${j.eligibleBranches}</div>
+                            <div><strong>Required Skills:</strong> ${j.requiredSkills}</div>
+                        </div>
+
+                        <h3 style="margin-bottom:0.5rem;">Job Description</h3>
+                        <p style="color:var(--text-main); margin-bottom:1.5rem; line-height:1.7;">${j.jobDescription}</p>
+
+                        ${reason ? `<div class="alert alert-warning" style="margin-bottom:1.5rem;">${reason}</div>` : ''}
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:1rem;">
+                            <a href="job-list.html" class="btn btn-secondary btn-sm">&larr; Back to Drives</a>
+                            <div>${btnHtml}</div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                }
+            } catch (e) {
+                card.innerHTML = `<p class="text-danger">Failed to load job details.</p>`;
+            }
+        });
+
+        async function applyJob(jobId) {
+            if (!confirm("Confirm submission of your job application?")) return;
+            try {
+                const res = await fetch('api/application', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'apply', jobId: jobId })
+                });
+                const data = await res.json();
+                alert(data.message);
+                if (data.status === 'success') {
+                    window.location.reload();
+                }
+            } catch (e) {
+                alert("Failed: " + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

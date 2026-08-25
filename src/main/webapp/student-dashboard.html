@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Campus Recruitment Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Student Placement Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="student-dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="job-list.html">Available Jobs</a></li>
+            <li><a href="application-history.html">My Applications</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-header">
+            <div>
+                <h1 id="studentHeaderName">Student Profile</h1>
+                <div id="studentBranchBadge" style="color:var(--text-muted); font-size:0.95rem;">Loading academic details...</div>
+            </div>
+            <div>
+                <span class="user-badge">Role: STUDENT</span>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1.5rem; align-items:start;">
+            <!-- Profile Edit Card -->
+            <div class="card">
+                <h3 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color);">Edit Student Profile</h3>
+                <div id="profileAlert"></div>
+                <form onsubmit="updateProfile(event)">
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="profName">Full Name</label>
+                        <input type="text" id="profName" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="profBranch">Branch</label>
+                        <select id="profBranch">
+                            <option value="CSE">CSE</option>
+                            <option value="IT">IT</option>
+                            <option value="ECE">ECE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="MECH">MECH</option>
+                            <option value="CIVIL">CIVIL</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="profCgpa">CGPA</label>
+                        <input type="number" step="0.01" min="0" max="10" id="profCgpa" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="profGradYear">Graduation Year</label>
+                        <input type="number" id="profGradYear" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="profBacklogs">Active Backlogs</label>
+                        <input type="number" id="profBacklogs" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:1rem;">
+                        <label for="profSkills">Skills</label>
+                        <input type="text" id="profSkills" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Active Drives Section -->
+            <div>
+                <div class="card-header" style="border:none; margin-bottom:0.5rem; padding-bottom:0;">
+                    <h2>Active Campus Drives</h2>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">Real-time eligibility engine active</span>
+                </div>
+                <div id="jobListContainer">
+                    <div class="card"><p class="text-muted">Loading available job drives...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:2rem;">
+            <div class="card-header">
+                <h2>Application History &amp; Status Tracking</h2>
+                <a href="application-history.html" class="btn btn-secondary btn-sm">Full History</a>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Company</th>
+                            <th>Job Role</th>
+                            <th>Date Applied</th>
+                            <th>Hiring Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/student.js"></script>
+</body>
+</html>

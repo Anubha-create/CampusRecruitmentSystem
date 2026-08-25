@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Campus Recruitment Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Campus Recruitment Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job-list.html">Job Drives</a></li>
+            <li><a href="register.html">Register</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container" style="max-width:480px; margin-top:2rem;">
+        <div class="card">
+            <h2 style="text-align:center; margin-bottom:0.5rem;">Sign In</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem;">Access your Student, Recruiter, or Admin Dashboard</p>
+
+            <div id="loginAlert"></div>
+
+            <form id="loginForm">
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="e.g. rahul.sharma@student.edu" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+            </form>
+
+            <div style="margin-top:1.5rem; text-align:center; font-size:0.9rem; color:var(--text-muted);">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+
+            <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border-color); font-size:0.8rem; color:var(--text-dim);">
+                <strong>Demo Credentials:</strong><br>
+                Admin: <code>admin@campus.com</code> / <code>admin123</code><br>
+                Recruiter: <code>hr@google.com</code> / <code>google123</code><br>
+                Student: <code>rahul.sharma@student.edu</code> / <code>student123</code>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAlert('loginAlert');
+
+            const payload = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const res = await fetch('api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    showAlert('loginAlert', data.message, 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || 'index.html';
+                    }, 500);
+                } else {
+                    showAlert('loginAlert', data.message, 'danger');
+                }
+            } catch (err) {
+                showAlert('loginAlert', 'Connection error: ' + err.message, 'danger');
+            }
+        });
+    </script>
+</body>
+</html>

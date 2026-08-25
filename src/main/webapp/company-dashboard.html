@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Recruiter Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Recruiter Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="company-dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-header">
+            <div>
+                <h1 id="companyHeaderName">Recruiter Dashboard</h1>
+                <div style="color:var(--text-muted); font-size:0.95rem;">Manage job drives, review candidates, and update recruitment pipeline statuses.</div>
+            </div>
+            <div>
+                <span class="user-badge">Role: COMPANY</span>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:1.5rem; align-items:start;">
+            <!-- Post Job Drive Card -->
+            <div class="card">
+                <h3 style="margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color);">Create Campus Job Drive</h3>
+                <div id="jobDriveAlert"></div>
+                <form id="createJobForm" onsubmit="createJobDrive(event)">
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="jobRole">Job Role / Designation</label>
+                        <input type="text" id="jobRole" placeholder="e.g. Software Engineer" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="packageAmount">Package Offered</label>
+                        <input type="text" id="packageAmount" placeholder="e.g. 14.5 LPA" required>
+                    </div>
+
+                    <div class="form-grid" style="grid-template-columns:1fr 1fr; margin-bottom:0.75rem;">
+                        <div class="form-group">
+                            <label for="minimumCgpa">Min CGPA</label>
+                            <input type="number" step="0.01" min="0" max="10" id="minimumCgpa" value="7.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="maximumBacklogs">Max Backlogs Allowed</label>
+                            <input type="number" id="maximumBacklogs" value="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="eligibleBranches">Eligible Branches (comma-separated)</label>
+                        <input type="text" id="eligibleBranches" value="CSE, IT, ECE" placeholder="e.g. CSE, IT, ECE" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="requiredSkills">Required Skills</label>
+                        <input type="text" id="requiredSkills" placeholder="e.g. Java, Data Structures, SQL" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0.75rem;">
+                        <label for="applicationDeadline">Deadline Date</label>
+                        <input type="date" id="applicationDeadline" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:1rem;">
+                        <label for="jobDescription">Job Description</label>
+                        <textarea id="jobDescription" rows="3" placeholder="Overview of team responsibilities..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Publish Job Drive</button>
+                </form>
+            </div>
+
+            <!-- Posted Job Drives -->
+            <div>
+                <h2 style="margin-bottom:1rem;">Your Active Job Drives</h2>
+                <div id="companyDrivesContainer">
+                    <p class="text-muted">Loading job drives...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applicant Tracking Pipeline -->
+        <div class="card" style="margin-top:2rem;">
+            <div class="card-header">
+                <h2>Applicant Candidates Pipeline</h2>
+                <span style="font-size:0.85rem; color:var(--text-muted);">Real-time status updates</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Applied Role</th>
+                            <th>Branch</th>
+                            <th>Academic Criteria</th>
+                            <th>Status</th>
+                            <th>Update Pipeline Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicantsTableBody">
+                        <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading applicants...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/company.js"></script>
+</body>
+</html>

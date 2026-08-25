@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Officer Admin Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">CR</div>
+            <span>Placement Officer Portal</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="#" onclick="logoutUser()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-header">
+            <div>
+                <h1>Campus Recruitment Statistics &amp; Control</h1>
+                <div style="color:var(--text-muted); font-size:0.95rem;">Overall placement performance, student registry, recruiter accounts, and multi-filter application reports.</div>
+            </div>
+            <div>
+                <span class="user-badge">Role: ADMIN</span>
+            </div>
+        </div>
+
+        <!-- Dashboard KPI Cards -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-title">Total Registered Students</div>
+                <div class="stat-value" id="statTotalStudents">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Registered Companies</div>
+                <div class="stat-value" id="statTotalCompanies">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Job Drives</div>
+                <div class="stat-value" id="statTotalJobDrives">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Applications</div>
+                <div class="stat-value" id="statTotalApplications">0</div>
+            </div>
+            <div class="stat-card" style="border-color:var(--success);">
+                <div class="stat-title" style="color:var(--success);">Placed Students</div>
+                <div class="stat-value" style="color:var(--success);" id="statTotalSelected">0</div>
+            </div>
+        </div>
+
+        <!-- Applications Filter Report Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>All Applications &amp; Placement Report</h2>
+                <button class="btn btn-secondary btn-sm" onclick="window.print()">Print Report</button>
+            </div>
+
+            <!-- Toolbar Filter -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="filterStudent" placeholder="Filter by Student Name / Email..." onkeyup="filterApplications()">
+                </div>
+                <div>
+                    <input type="text" id="filterCompany" placeholder="Filter by Company..." onkeyup="filterApplications()" style="width:180px;">
+                </div>
+                <div>
+                    <input type="text" id="filterRole" placeholder="Filter by Job Role..." onkeyup="filterApplications()" style="width:180px;">
+                </div>
+                <div>
+                    <select id="filterStatus" onchange="filterApplications()" style="width:160px;">
+                        <option value="ALL">All Statuses</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Shortlisted">Shortlisted</option>
+                        <option value="Aptitude Test">Aptitude Test</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Selected">Selected</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Company</th>
+                            <th>Job Role</th>
+                            <th>Date Applied</th>
+                            <th>Current Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allApplicationsTableBody">
+                        <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading application report...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+            <!-- Manage Students Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Manage Student Registry</h3>
+                    <input type="text" placeholder="Search student..." onkeyup="loadAdminStudents(this.value)" style="width:160px; padding:0.4rem 0.6rem; font-size:0.85rem;">
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Branch</th>
+                                <th>CGPA</th>
+                                <th>Backlogs</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminStudentsTableBody">
+                            <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading students...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage Companies Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Registered Recruiter Companies</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Company Name</th>
+                                <th>Recruiter Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCompaniesTableBody">
+                            <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Loading companies...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border-color);">
+                    <h4>Add New Recruiter Company</h4>
+                    <div id="addCompanyAlert"></div>
+                    <form id="addCompanyForm" onsubmit="addCompanyByAdmin(event)" style="margin-top:0.75rem;">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:0.5rem;">
+                            <input type="text" id="adminCompName" placeholder="Company Name" required>
+                            <input type="email" id="adminCompEmail" placeholder="Recruiter Email" required>
+                        </div>
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:0.5rem;">
+                            <input type="password" id="adminCompPassword" placeholder="Default Password" required>
+                            <input type="text" id="adminCompDesc" placeholder="Company Overview">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm" style="width:100%;">Create Recruiter Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Campus Recruitment Management System.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
