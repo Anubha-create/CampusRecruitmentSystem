@@ -54,6 +54,18 @@
             <artifactId>tomcat-embed-jasper</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-util-scan</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-util</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

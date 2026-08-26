@@ -1,5 +1,6 @@
 package com.campus.util;
 
+import com.campus.servlet.*;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 
@@ -30,6 +31,32 @@ public class AppServer {
         }
 
         Context ctx = tomcat.addWebapp("", new File(webappDirLocation).getAbsolutePath());
+        
+        // Register Servlets programmatically for guaranteed embedded execution
+        Tomcat.addServlet(ctx, "LoginServlet", new LoginServlet());
+        ctx.addServletMappingDecoded("/api/login", "LoginServlet");
+
+        Tomcat.addServlet(ctx, "RegisterServlet", new RegisterServlet());
+        ctx.addServletMappingDecoded("/api/register", "RegisterServlet");
+
+        Tomcat.addServlet(ctx, "LogoutServlet", new LogoutServlet());
+        ctx.addServletMappingDecoded("/api/logout", "LogoutServlet");
+
+        Tomcat.addServlet(ctx, "StudentServlet", new StudentServlet());
+        ctx.addServletMappingDecoded("/api/student", "StudentServlet");
+
+        Tomcat.addServlet(ctx, "CompanyServlet", new CompanyServlet());
+        ctx.addServletMappingDecoded("/api/company", "CompanyServlet");
+
+        Tomcat.addServlet(ctx, "JobDriveServlet", new JobDriveServlet());
+        ctx.addServletMappingDecoded("/api/job-drive", "JobDriveServlet");
+
+        Tomcat.addServlet(ctx, "ApplicationServlet", new ApplicationServlet());
+        ctx.addServletMappingDecoded("/api/application", "ApplicationServlet");
+
+        Tomcat.addServlet(ctx, "AdminServlet", new AdminServlet());
+        ctx.addServletMappingDecoded("/api/admin", "AdminServlet");
+
         System.out.println("[AppServer] Starting Apache Tomcat on http://localhost:" + port);
         System.out.println("[AppServer] Configuring web application directory: " + ctx.getDocBase());
 

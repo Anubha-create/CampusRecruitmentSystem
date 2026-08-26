@@ -13,7 +13,7 @@ public class DBConnection {
 
     private static String URL = "jdbc:mysql://localhost:3306/campus_recruitment_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true";
     private static String USER = "root";
-    private static String PASSWORD = "root"; // Default password - configurable via db.properties or environment
+    private static String PASSWORD = "1234"; // Default password on local MySQL Server
 
     static {
         // Load properties from classpath if present
