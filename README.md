@@ -149,27 +149,6 @@ Once started, open your browser and navigate to:
 
 ---
 
-## 🐙 Step 4: Push Project to GitHub
-
-To publish this project to your GitHub profile:
-
-```bash
-# 1. Initialize git repository
-git init
-
-# 2. Add files and make initial commit
-git add .
-git commit -m "Initial commit: Campus Recruitment Management System (Java Servlets, JDBC, MySQL)"
-
-# 3. Create a new repository on GitHub (e.g. campus-recruitment-system)
-# 4. Link remote and push
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/campus-recruitment-system.git
-git branch -M main
-git push -u origin main
-```
-
----
-
 ## 💡 Technical Interview Q&A Summary
 
 - **Q: How does the Automatic Eligibility Engine work?**
@@ -180,3 +159,4 @@ git push -u origin main
 
 - **Q: How is role-based session management handled without Spring Security?**
   *A: Upon successful login, `LoginServlet` creates an `HttpSession` containing user details and role (`STUDENT`, `COMPANY`, `ADMIN`). Servlets validate `session.getAttribute("user")` and role privileges before executing actions.*
+
