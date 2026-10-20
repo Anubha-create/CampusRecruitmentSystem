@@ -147,16 +147,5 @@ Once started, open your browser and navigate to:
    - View overall metrics (Total Students, Companies, Job Drives, Applications, Placed Students).
    - Search student registry, manage recruiters, and filter application reports by company, role, or candidate name.
 
----
 
-## 💡 Technical Interview Q&A Summary
-
-- **Q: How does the Automatic Eligibility Engine work?**
-  *A: `EligibilityChecker.java` compares student attributes (`Student` bean) against job thresholds (`JobDrive` bean). It performs precision decimal comparison for CGPA, integer check for active backlogs, and normalized string token matching for eligible academic branches.*
-
-- **Q: How are database operations secured against SQL Injection?**
-  *A: All DAO classes (`UserDAO`, `StudentDAO`, `JobDriveDAO`, `ApplicationDAO`) use JDBC `PreparedStatement` objects with parameter binding (`?`) instead of string concatenation.*
-
-- **Q: How is role-based session management handled without Spring Security?**
-  *A: Upon successful login, `LoginServlet` creates an `HttpSession` containing user details and role (`STUDENT`, `COMPANY`, `ADMIN`). Servlets validate `session.getAttribute("user")` and role privileges before executing actions.*
 
